@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Chỉ nhận chuột</string>
+    <string name="service_desc">Chặn mọi cú chạm của ngón tay và chỉ cho phép chuột (Bluetooth hoặc có dây) điều khiển máy. Tự tắt khi không có chuột.</string>
+
+    <string name="switch_label">Chặn cảm ứng (chỉ nhận chuột)</string>
+    <string name="btn_accessibility">Mở cài đặt Trợ năng</string>
+    <string name="btn_appinfo">Mở thông tin ứng dụng</string>
+
+    <string name="status_unknown">Đang chờ dịch vụ khởi động…</string>
+    <string name="status_service_off">⚠ Chưa bật dịch vụ Trợ năng. Bấm nút bên dưới, tìm «Chỉ nhận chuột» và bật lên.</string>
+    <string name="status_blocking">✅ Đang chặn cảm ứng – chỉ chuột hoạt động.</string>
+    <string name="status_no_mouse">🖱 Chưa thấy chuột nào đang kết nối nên cảm ứng vẫn dùng bình thường. Cắm hoặc ghép chuột, app sẽ tự chặn cảm ứng.</string>
+    <string name="status_disabled">⏸ Đang tắt. Cảm ứng hoạt động bình thường.</string>
+    <string name="status_paused">⏸ Đang tạm dừng bằng phím âm lượng. Nhấn Vol+ và Vol− cùng lúc để bật lại.</string>
+
+    <string name="toast_paused">Đã tạm dừng chặn cảm ứng</string>
+    <string name="toast_resumed">Đã bật lại chặn cảm ứng</string>
+
+    <string name="steps">Cách thiết lập:\n1. Mở thông tin ứng dụng → bấm ⋮ góc trên → chọn «Cho phép cài đặt bị hạn chế» (Android 13+ bắt buộc với app cài từ file APK).\n2. Mở cài đặt Trợ năng → Ứng dụng đã tải xuống → Chỉ nhận chuột → Bật.\n3. Xiaomi: bật «Tự khởi động» và đặt Tiết kiệm pin = «Không hạn chế» cho app này; khóa app trong màn hình đa nhiệm.\n\nCách dùng chuột:\n• Click trái = chạm\n• Giữ chuột = nhấn giữ\n• Kéo = vuốt (thực hiện khi nhả chuột)\n• Lăn chuột = cuộn\n• Chuột phải = Quay lại\n• Chuột giữa = Màn hình chính\n\nThoát hiểm: nhấn Vol+ và Vol− cùng lúc để tạm dừng hoặc bật lại chặn cảm ứng. Rút chuột ra thì cảm ứng tự hoạt động lại.</string>
+</resources>
