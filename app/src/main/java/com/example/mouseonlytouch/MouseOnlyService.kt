@@ -20,6 +20,7 @@ import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
+import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
 
@@ -234,7 +235,7 @@ class MouseOnlyService : AccessibilityService() {
             val y = p[1].coerceIn(1f, (h - 1).toFloat())
             if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
         }
-        dispatchPath(path, durationMs.coerceIn(100L, 1500L))
+        dispatchPath(path, durationMs.coerceIn(120L, 500L))
     }
 
     /** Con lăn chuột → vuốt ngón tay. vScroll > 0 là lăn lên (nội dung đi xuống). */
@@ -296,6 +297,57 @@ class MouseOnlyService : AccessibilityService() {
         if (!dispatchGesture(gesture, callback, handler)) {
             handler.removeCallbacks(release)
             release.run()
+        }
+    }
+
+    private fun statusBarHeightPx(): Float {
+        val id = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (id > 0) {
+            resources.getDimensionPixelSize(id).toFloat()
+        } else {
+            28f * resources.displayMetrics.density
+        }
+    }
+
+    /**
+     * Kéo chuột từ mép màn hình → hành động hệ thống (tức thì, không qua lớp phủ).
+     * Trả về true nếu đã xử lý.
+     */
+    private fun handleEdgeGesture(
+        downX: Float, downY: Float, upX: Float, upY: Float,
+        heldMs: Long, w: Int, h: Int
+    ): Boolean {
+        val d = resources.displayMetrics.density
+        val topZone = max(statusBarHeightPx(), 24f * d)
+        val bottomZone = 28f * d
+        val sideZone = 20f * d
+        val minPull = 48f * d
+        val dx = upX - downX
+        val dy = upY - downY
+
+        return when {
+            // Kéo từ mép trên xuống: thông báo (40% bên phải: cài đặt nhanh)
+            downY <= topZone && dy > minPull && dy > abs(dx) -> {
+                performGlobalAction(
+                    if (downX > w * 0.6f) GLOBAL_ACTION_QUICK_SETTINGS
+                    else GLOBAL_ACTION_NOTIFICATIONS
+                )
+                true
+            }
+            // Kéo từ mép dưới lên: nhanh = Home, chậm/giữ = đa nhiệm
+            downY >= h - bottomZone && -dy > minPull && -dy > abs(dx) -> {
+                performGlobalAction(
+                    if (heldMs >= 350L) GLOBAL_ACTION_RECENTS else GLOBAL_ACTION_HOME
+                )
+                true
+            }
+            // Kéo từ mép trái/phải vào trong: Quay lại
+            (downX <= sideZone && dx > minPull && dx > abs(dy)) ||
+                (downX >= w - sideZone && -dx > minPull && -dx > abs(dy)) -> {
+                performGlobalAction(GLOBAL_ACTION_BACK)
+                true
+            }
+            else -> false
         }
     }
 
@@ -375,9 +427,19 @@ class MouseOnlyService : AccessibilityService() {
             val primary = (buttons and MotionEvent.BUTTON_PRIMARY) != 0
             val secondary = (buttons and MotionEvent.BUTTON_SECONDARY) != 0
             val tertiary = (buttons and MotionEvent.BUTTON_TERTIARY) != 0
+            val sideOnly =
+                (buttons and (MotionEvent.BUTTON_BACK or MotionEvent.BUTTON_FORWARD)) != 0 &&
+                    !primary && !secondary && !tertiary
 
             when {
-                moved && primary -> swipeAlong(trail, heldMs)
+                sideOnly -> { /* phím cạnh chuột: hệ thống tự xử lý */ }
+                moved && primary -> {
+                    val last = trail.last()
+                    val handled = handleEdgeGesture(
+                        downX, downY, last[0], last[1], heldMs, width, height
+                    )
+                    if (!handled) swipeAlong(trail, heldMs)
+                }
                 moved -> { /* kéo bằng chuột phải/giữa: bỏ qua */ }
                 secondary -> performGlobalAction(GLOBAL_ACTION_BACK)
                 tertiary -> performGlobalAction(GLOBAL_ACTION_HOME)
