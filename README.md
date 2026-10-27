@@ -16,6 +16,9 @@ App Android (Kotlin, không cần root) dành cho máy bị loạn cảm ứng: 
 | Lăn chuột | Cuộn |
 | Chuột phải | Quay lại |
 | Chuột giữa | Màn hình chính |
+| Kéo từ mép trên xuống | Thanh thông báo (kéo từ 40% bên phải: cài đặt nhanh) |
+| Kéo từ mép dưới lên | Màn hình chính (kéo chậm, giữ từ 0,35 giây: đa nhiệm) |
+| Kéo từ mép trái hoặc phải vào | Quay lại |
 
 ## Build ra file APK
 
@@ -51,3 +54,9 @@ App Android (Kotlin, không cần root) dành cho máy bị loạn cảm ứng: 
 - Vuốt từ mép màn hình (cử chỉ điều hướng của hệ thống) có thể vẫn bị cảm ứng loạn kích hoạt.
 - Kéo bằng chuột chỉ được thực hiện khi nhả chuột, nên thanh trượt sẽ nhảy tới vị trí cuối thay vì chạy theo chuột.
 - Chưa có thao tác hai ngón (phóng to / thu nhỏ).
+
+## Chế độ nhanh (mặc định bật, Android 12 trở lên)
+
+Thay vì phủ lớp chặn, app dùng `TouchInteractionController` để hệ thống tự nuốt cảm ứng ngón tay. Chuột không đi qua lớp trung gian nào nên lướt, kéo, cuộn đều như bình thường, không trễ. Tắt công tắc "Chế độ nhanh" trong app để quay lại chế độ lớp phủ cũ.
+
+Ở chế độ nhanh, các thao tác chuột là của chính Android (chuột phải = Quay lại). Nên bật **thanh điều hướng 3 nút** (Cài đặt → Màn hình chính → Điều hướng hệ thống) để có nút Home và Đa nhiệm bấm bằng chuột.
